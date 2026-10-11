@@ -146,6 +146,24 @@ The server will start at `http://localhost:5000`.
 
 ---
 
+## 🧪 Automated Testing (Jest & Supertest)
+
+Aap saare APIs ko verify karne ke liye automated integration test suite chala sakte hain:
+
+```bash
+npm test
+```
+
+### Coverage Overview (27 Test Cases Across 4 Test Suites)
+- **`tests/health.test.js`**: Health check `/health` liveness aur 404 fallback route.
+- **`tests/auth.test.js`**: User registration, duplicate email handling (409), validation checks (422), login auth (200), invalid credentials (401), protected `/api/v1/auth/me` profile (200/401).
+- **`tests/projects.test.js`**: Projects creation, pagination list, retrieve by ID with nested tasks, project update, cascading delete.
+- **`tests/tasks.test.js`**: Task creation under project, status transitions (`todo` -> `in_progress`), priority validation, fetch by ID, task deletion.
+
+Tests run against an isolated SQLite database (`test.db`) to ensure the development database remains completely unaffected.
+
+---
+
 ## 🧪 Codzee Review Evaluation Strategy
 This repository is configured for assessing **Codzee.io** AI code reviews across 3 distinct Pull Requests:
 
