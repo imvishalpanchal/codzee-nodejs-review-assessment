@@ -1,8 +1,10 @@
 const express = require('express');
 const taskController = require('../controllers/tasks');
+const commentController = require('../controllers/comments');
 const { authMiddleware } = require('../middlewares/auth');
 const { validateRequest } = require('../utils/yup');
 const { createTaskSchema, updateTaskSchema } = require('../validations/tasks');
+const { createCommentSchema } = require('../validations/comments');
 
 const router = express.Router();
 
@@ -13,5 +15,8 @@ router.get('/:id', taskController.getById);
 router.post('/', validateRequest(createTaskSchema), taskController.create);
 router.put('/:id', validateRequest(updateTaskSchema), taskController.update);
 router.delete('/:id', taskController.delete);
+
+router.get('/:taskId/comments', commentController.getByTaskId);
+router.post('/:taskId/comments', validateRequest(createCommentSchema), commentController.create);
 
 module.exports = router;

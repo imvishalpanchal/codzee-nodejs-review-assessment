@@ -6,6 +6,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
 const taskRoutes = require('./routes/tasks');
+const commentRoutes = require('./routes/comments');
 const errorHandler = require('./middlewares/errorHandler');
 const ApiResponse = require('./config/api/sendResponse');
 
@@ -28,6 +29,7 @@ app.get('/health', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1/tasks', taskRoutes);
+app.use('/api/v1/comments', commentRoutes);
 
 app.use((req, res) => {
   return res.status(404).json({
