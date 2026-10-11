@@ -18,7 +18,6 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   return ApiResponse.details(res, 200, 'Service is healthy', {
     status: 'ok',
@@ -26,12 +25,10 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 
-// Fallback 404 handler
 app.use((req, res) => {
   return res.status(404).json({
     success: false,
@@ -42,7 +39,6 @@ app.use((req, res) => {
   });
 });
 
-// Centralized error handling
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;

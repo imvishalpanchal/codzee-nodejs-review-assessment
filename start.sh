@@ -16,7 +16,7 @@ if [ ! -f .env ]; then
   cat << 'EOF' > .env
 PORT=5000
 DATABASE_URL="file:./dev.db"
-JWT_SECRET="super_secret_codzee_jwt_key_2026_dev_env"
+JWT_SECRET="z5VsS9BWzQkYXigDXrDJ6tWfd03IQ5diGJbGKkaob78yOuKrrwkMLQ36ua0"
 JWT_EXPIRES_IN="24h"
 NODE_ENV="development"
 EOF
@@ -25,7 +25,7 @@ else
   echo "✔ .env file found."
   # Check and ensure required keys exist
   grep -q "DATABASE_URL" .env || echo 'DATABASE_URL="file:./dev.db"' >> .env
-  grep -q "JWT_SECRET" .env || echo 'JWT_SECRET="super_secret_codzee_jwt_key_2026_dev_env"' >> .env
+  grep -q "JWT_SECRET" .env || echo 'JWT_SECRET="z5VsS9BWzQkYXigDXrDJ6tWfd03IQ5diGJbGKkaob78yOuKrrwkMLQ36ua0"' >> .env
   grep -q "PORT" .env || echo 'PORT=5000' >> .env
   grep -q "NODE_ENV" .env || echo 'NODE_ENV="development"' >> .env
 fi

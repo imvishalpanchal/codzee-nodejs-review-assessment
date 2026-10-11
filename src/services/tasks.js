@@ -26,7 +26,6 @@ const taskService = {
       where.title = { contains: query.search };
     }
 
-    // Role-based visibility: members only see tasks belonging to their projects or assigned to them
     if (userRole !== 'admin') {
       where.OR = [
         { assigneeId: userId },
@@ -80,7 +79,6 @@ const taskService = {
   },
 
   createTask: async (data, userId, userRole) => {
-    // Validate project existence and access
     const project = await prisma.project.findUnique({
       where: { id: parseInt(data.projectId, 10) }
     });
@@ -93,7 +91,6 @@ const taskService = {
       throw errors.forbidden('Only the project owner or admin can create tasks in this project');
     }
 
-    // Validate assignee if supplied
     if (data.assigneeId) {
       const assignee = await prisma.user.findUnique({
         where: { id: data.assigneeId }

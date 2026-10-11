@@ -10,7 +10,6 @@ const errorHandler = (err, req, res, next) => {
     return res.status(err.statusCode).json(err.toJSON());
   }
 
-  // Handle Prisma Known Request Errors
   if (err.code === 'P2002') {
     const conflictErr = errors.conflict('A record with that unique field already exists');
     return res.status(conflictErr.statusCode).json(conflictErr.toJSON());

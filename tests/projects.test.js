@@ -8,7 +8,6 @@ describe('Project Endpoints (/api/v1/projects)', () => {
   let testProjectId;
 
   beforeAll(async () => {
-    // Register owner user
     const regRes = await request(app)
       .post('/api/v1/auth/register')
       .send({

@@ -9,7 +9,6 @@ describe('Task Endpoints (/api/v1/tasks)', () => {
   let testTaskId;
 
   beforeAll(async () => {
-    // Register user
     const regRes = await request(app)
       .post('/api/v1/auth/register')
       .send({
@@ -22,7 +21,6 @@ describe('Task Endpoints (/api/v1/tasks)', () => {
     userToken = regRes.body.response.token;
     userId = regRes.body.response.user.id;
 
-    // Create a project for tasks
     const projectRes = await request(app)
       .post('/api/v1/projects')
       .set('Authorization', `Bearer ${userToken}`)

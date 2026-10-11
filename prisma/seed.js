@@ -6,12 +6,10 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // Clean existing data
   await prisma.task.deleteMany();
   await prisma.project.deleteMany();
   await prisma.user.deleteMany();
 
-  // Create admin user
   const adminPassword = await bcrypt.hash('Admin@123456', 10);
   const admin = await prisma.user.create({
     data: {
@@ -22,7 +20,6 @@ async function main() {
     }
   });
 
-  // Create demo member user
   const memberPassword = await bcrypt.hash('Member@123456', 10);
   const member = await prisma.user.create({
     data: {
@@ -33,7 +30,6 @@ async function main() {
     }
   });
 
-  // Create demo project
   const project1 = await prisma.project.create({
     data: {
       name: 'Codzee AI Integration Pipeline',
@@ -52,7 +48,6 @@ async function main() {
     }
   });
 
-  // Create demo tasks
   await prisma.task.createMany({
     data: [
       {
@@ -83,8 +78,8 @@ async function main() {
   });
 
   console.log('Database seeded successfully!');
-  console.log(`Admin user: admin@codzee-review.dev (password: Admin@123456)`);
-  console.log(`Member user: member@codzee-review.dev (password: Member@123456)`);
+  console.log('Admin user: admin@codzee-review.dev (password: Admin@123456)');
+  console.log('Member user: member@codzee-review.dev (password: Member@123456)');
 }
 
 main()
