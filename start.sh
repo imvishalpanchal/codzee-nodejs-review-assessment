@@ -12,22 +12,11 @@ echo "=================================================="
 
 # 1. Environment Variable Setup (.env)
 if [ ! -f .env ]; then
-  echo "📄 .env file not found. Generating from defaults..."
-  cat << 'EOF' > .env
-PORT=5000
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="z5VsS9BWzQkYXigDXrDJ6tWfd03IQ5diGJbGKkaob78yOuKrrwkMLQ36ua0"
-JWT_EXPIRES_IN="24h"
-NODE_ENV="development"
-EOF
-  echo "✔ .env file created successfully."
+  echo "📄 .env file not found. Creating from .env.example..."
+  cp .env.example .env
+  echo "✔ .env file created successfully from .env.example."
 else
   echo "✔ .env file found."
-  # Check and ensure required keys exist
-  grep -q "DATABASE_URL" .env || echo 'DATABASE_URL="file:./dev.db"' >> .env
-  grep -q "JWT_SECRET" .env || echo 'JWT_SECRET="z5VsS9BWzQkYXigDXrDJ6tWfd03IQ5diGJbGKkaob78yOuKrrwkMLQ36ua0"' >> .env
-  grep -q "PORT" .env || echo 'PORT=5000' >> .env
-  grep -q "NODE_ENV" .env || echo 'NODE_ENV="development"' >> .env
 fi
 
 # 2. Check & Install NPM Dependencies
