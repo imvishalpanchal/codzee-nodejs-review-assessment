@@ -33,6 +33,13 @@ const messages = {
     NOT_FOUND: 'Task not found'
   },
 
+  COMMENT: {
+    FETCH_SUCCESS: 'Comments retrieved successfully',
+    CREATE_SUCCESS: 'Comment added successfully',
+    DELETE_SUCCESS: 'Comment removed successfully',
+    NOT_FOUND: 'Comment not found'
+  },
+
   VALIDATION: {
     NAME_REQUIRED: 'Name is required',
     EMAIL_REQUIRED: 'Email is required',
@@ -42,7 +49,8 @@ const messages = {
     TITLE_REQUIRED: 'Title is required',
     PROJECT_ID_REQUIRED: 'Project ID is required',
     STATUS_INVALID: 'Invalid status provided',
-    PRIORITY_INVALID: 'Invalid priority provided'
+    PRIORITY_INVALID: 'Invalid priority provided',
+    CONTENT_REQUIRED: 'Comment content is required'
   }
 };
 
