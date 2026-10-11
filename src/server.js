@@ -7,12 +7,16 @@ const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
 const taskRoutes = require('./routes/tasks');
 const errorHandler = require('./middlewares/errorHandler');
+const { securityHeaders, sanitizeInput } = require('./middlewares/security');
+const { apiLimiter, authLimiter } = require('./middlewares/rateLimiter');
 const ApiResponse = require('./config/api/sendResponse');
 
 const app = express();
 
+app.use(securityHeaders);
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
+app.use(sanitizeInput);
 
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
@@ -25,7 +29,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/api/v1/auth', authRoutes);
+app.use('/api', apiLimiter);
+app.use('/api/v1/auth', authLimiter, authRoutes);
 app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 
