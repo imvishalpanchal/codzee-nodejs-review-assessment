@@ -56,12 +56,30 @@ codzee-nodejs-review-assessment/
 ├── .env.example
 ├── .gitignore
 ├── package.json
+├── start.sh                  # One-click automated setup and startup script
 └── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
+## ⚡ Quick Start (Recommended)
+Aap single command se environment setup, dependency install, database sync, seed aur server start kar sakte hain:
+
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+Ye script automatically:
+1. `.env.example` se `.env` create karega.
+2. Dependencies install karega (`npm install`).
+3. Prisma client generate aur SQLite database sync karega (`prisma db push`).
+4. Demo data seed karega (`npm run db:seed`).
+5. Development server `npm run dev` start kar dega!
+
+---
+
+## 🚀 Manual Step-by-Step Setup
 
 ### 1. Installation
 Clone the repository and install dependencies:
