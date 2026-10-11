@@ -2,16 +2,30 @@ const prisma = require('../config/database/prismaClient');
 const { errors } = require('../config/api/errorHandler');
 const messages = require('../utils/messages');
 
+const VALID_STATUS_TRANSITIONS = {
+  todo: ['in_progress', 'todo'],
+  in_progress: ['in_review', 'todo', 'in_progress'],
+  in_review: ['done', 'in_progress', 'in_review'],
+  done: ['todo', 'done']
+};
+
 const taskService = {
   getTasks: async (query = {}, userId, userRole) => {
-    const page = parseInt(query.page, 10) || 1;
-    const limit = parseInt(query.limit, 10) || 10;
+    const rawPage = parseInt(query.page, 10);
+    const page = isNaN(rawPage) || rawPage < 1 ? 1 : rawPage;
+
+    const rawLimit = parseInt(query.limit, 10);
+    const limit = isNaN(rawLimit) || rawLimit < 1 ? 10 : Math.min(rawLimit, 100);
+
     const skip = (page - 1) * limit;
 
     const where = {};
 
     if (query.projectId) {
-      where.projectId = parseInt(query.projectId, 10);
+      const projId = parseInt(query.projectId, 10);
+      if (!isNaN(projId)) {
+        where.projectId = projId;
+      }
     }
     if (query.status) {
       where.status = query.status;
@@ -55,8 +69,13 @@ const taskService = {
   },
 
   getTaskById: async (id, userId, userRole) => {
+    const taskId = parseInt(id, 10);
+    if (isNaN(taskId) || taskId <= 0) {
+      throw errors.badRequest('Invalid task ID provided');
+    }
+
     const task = await prisma.task.findUnique({
-      where: { id: parseInt(id, 10) },
+      where: { id: taskId },
       include: {
         project: { select: { id: true, name: true, ownerId: true } },
         assignee: { select: { id: true, name: true, email: true } }
@@ -79,8 +98,13 @@ const taskService = {
   },
 
   createTask: async (data, userId, userRole) => {
+    const projId = parseInt(data.projectId, 10);
+    if (isNaN(projId) || projId <= 0) {
+      throw errors.badRequest('Invalid project ID provided');
+    }
+
     const project = await prisma.project.findUnique({
-      where: { id: parseInt(data.projectId, 10) }
+      where: { id: projId }
     });
 
     if (!project) {
@@ -107,7 +131,7 @@ const taskService = {
         priority: data.priority || 'medium',
         status: data.status || 'todo',
         dueDate: data.dueDate ? new Date(data.dueDate) : null,
-        projectId: parseInt(data.projectId, 10),
+        projectId: projId,
         assigneeId: data.assigneeId || null
       },
       include: {
@@ -118,8 +142,13 @@ const taskService = {
   },
 
   updateTask: async (id, data, userId, userRole) => {
+    const taskId = parseInt(id, 10);
+    if (isNaN(taskId) || taskId <= 0) {
+      throw errors.badRequest('Invalid task ID provided');
+    }
+
     const existing = await prisma.task.findUnique({
-      where: { id: parseInt(id, 10) },
+      where: { id: taskId },
       include: { project: true }
     });
 
@@ -135,6 +164,15 @@ const taskService = {
       throw errors.forbidden(messages.FORBIDDEN);
     }
 
+    if (data.status && data.status !== existing.status) {
+      const allowedNext = VALID_STATUS_TRANSITIONS[existing.status] || [];
+      if (!allowedNext.includes(data.status)) {
+        throw errors.badRequest(
+          `Cannot transition task status directly from '${existing.status}' to '${data.status}'`
+        );
+      }
+    }
+
     if (data.assigneeId) {
       const assignee = await prisma.user.findUnique({
         where: { id: data.assigneeId }
@@ -145,7 +183,7 @@ const taskService = {
     }
 
     return prisma.task.update({
-      where: { id: parseInt(id, 10) },
+      where: { id: taskId },
       data: {
         ...(data.title && { title: data.title }),
         ...(data.description !== undefined && { description: data.description }),
@@ -164,8 +202,13 @@ const taskService = {
   },
 
   deleteTask: async (id, userId, userRole) => {
+    const taskId = parseInt(id, 10);
+    if (isNaN(taskId) || taskId <= 0) {
+      throw errors.badRequest('Invalid task ID provided');
+    }
+
     const existing = await prisma.task.findUnique({
-      where: { id: parseInt(id, 10) },
+      where: { id: taskId },
       include: { project: true }
     });
 
@@ -178,7 +221,7 @@ const taskService = {
     }
 
     return prisma.task.delete({
-      where: { id: parseInt(id, 10) }
+      where: { id: taskId }
     });
   }
 };
